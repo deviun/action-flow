@@ -28,7 +28,11 @@
     "just-mongo": "1.1.0",
     "lodash": "4.17.4",
     "sha256": "^0.2.0",
-    "uuid": "^3.1.0",
-    "winston": "^2.4.0"
+    "uuid": "3.1.0",
+    "winston": "2.4.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "8.0.2",
+    "eslint-config-google": "0.9.1"
   }
 }

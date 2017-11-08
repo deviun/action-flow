@@ -45,6 +45,28 @@ const Time = {
   }
 };
 
+class MultiFlow {
+  constructor (descriptionList, dbConfig) {
+    this.flows = descriptionList.reduce((list, description) => {
+      list.push(new ManagerCore(description, dbConfig));
+
+      return list;
+    }, []);
+  }
+
+  async await () {
+    return $Promise.all(this.flows.map((flow) => {
+      return flow.await();
+    }));
+  }
+
+  async end () {
+    return $Promise.all(this.flows.map((flow) => {
+      return flow.end();
+    }));
+  }
+}
+
 class ManagerCore {
   constructor (flowDescription, dbConfig, awaitTimeoutSec) {
     const checkDBConfig = [
@@ -139,8 +161,8 @@ class ManagerCore {
     return this.clientId;
   }
 
-  static multi () {
-    
+  static multi (descriptionList, dbConfig) {
+    return new MultiFlow(descriptionList, dbConfig);
   }
 }
 
