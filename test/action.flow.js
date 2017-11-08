@@ -10,7 +10,6 @@ const dbConfig = {
 
 const users = ['Anton Danilov', 'Anton Deviun', 'Deviun', 'БезЪумный'];
 
-
 (async () => {
   console.log('result with AF');
   
