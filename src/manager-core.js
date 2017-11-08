@@ -1,0 +1,147 @@
+const ROOT = `${__dirname}/../`;
+const moduleName = 'ActionFlow.manager-core';
+
+const _ = require('lodash');
+
+const $path = require('path');
+const $uuid = require('uuid/v4');
+const $sha256 = require('sha256');
+const $JMongo = require('just-mongo');
+const $log = require($path.resolve(ROOT, 'src/libs/log'));
+const $Queue = require($path.resolve(ROOT, 'src/queue'));
+const $Promise = require('bluebird');
+
+const AWAIT_TIMEOUT_SEC = 30;
+
+const mongoConnections = {};
+const actionFlowModels = require($path.resolve(ROOT, 'src/models')).models;
+
+const Description = {
+  parse (flowDescription) {
+    if (!(flowDescription instanceof Object)) {
+      throw new Error(`[${moduleName}] {flowDescription} -> object is not found`);
+    } 
+
+    function _p (obj) {
+      return Object.keys(obj).reduce((r, key, index) => {
+        const value = obj[key] instanceof Object ? _p(obj[key]) : String(obj[key]);
+
+        r += $sha256(`${key}.${value}.${index}`);
+
+        return r;
+      }, 'start');
+    }
+
+    return $sha256( _p(flowDescription) );
+  }
+};
+
+const Time = {
+  getSec () {
+    return (new Date()).getTime() / 1000;
+  },
+  getMsec () {
+    return (new Date()).getTime();
+  }
+};
+
+class ManagerCore {
+  constructor (flowDescription, dbConfig, awaitTimeoutSec) {
+    const checkDBConfig = [
+      _.has(dbConfig, 'db'),
+      _.has(dbConfig, 'host'),
+      _.has(dbConfig, 'port')
+    ];
+
+    if (checkDBConfig.includes(false)) {
+      throw new Error(`[${moduleName}] db config is invalid`);
+    }
+
+    if (awaitTimeoutSec) {
+      this.AWAIT_TIMEOUT_SEC = awaitTimeoutSec;
+    }
+
+    const configHash = Description.parse(dbConfig);
+    const dbConnection = mongoConnections[Symbol.for(configHash)];
+
+    if (!dbConnection) {
+      const newConnection = new $JMongo({
+        models: actionFlowModels,
+        db: _.get(dbConfig, 'db'),
+        user: _.get(dbConfig, 'user'),
+        password: _.get(dbConfig, 'password'),
+        host: _.get(dbConfig, 'host'),
+        host: _.get(dbConfig, 'host'),
+        port: _.get(dbConfig, 'port')
+      }, (err, ok) => {
+        if (err) {
+          
+          delete this;
+        }
+      });
+
+      mongoConnections[Symbol.for(configHash)] = newConnection;
+
+      this.db = newConnection;
+    } else {
+      this.db = dbConnection;
+    }
+
+   this.descriptionHash = Description.parse(flowDescription);
+   this.createClientId();
+  }
+
+  async await () {
+    this.queue = new $Queue({
+      descriptionHash: this.descriptionHash,
+      clientId: this.clientId,
+      db: this.db
+    });
+
+    await this.queue.join();
+
+    await new $Promise((resolve, reject) => {
+      const startTime = Time.getSec();
+      const timeout = this.AWAIT_TIMEOUT_SEC || AWAIT_TIMEOUT_SEC;
+
+      const _await = async () => {
+        const isFirstInQueue = await this.queue.isFirst();
+        const pointTime = Time.getSec();
+        const timePassed = pointTime - startTime;
+
+        if (!isFirstInQueue) {
+          if (timePassed < timeout) {
+            setTimeout(_await, ( timePassed * 100 ));
+          } else {
+            reject('timeout');
+          }
+        } else {
+          resolve();
+        }
+      };
+
+      _await();
+    })
+    .catch((err) => {
+      this.end();
+
+      throw err;
+    });
+  }
+
+  async end () {
+    return this.queue.leave();
+  }
+
+  createClientId () {
+    this.clientId = $uuid();
+
+    return this.clientId;
+  }
+
+  static multi () {
+    
+  }
+}
+
+module.exports = ManagerCore;
