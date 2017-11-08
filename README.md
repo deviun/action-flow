@@ -11,9 +11,9 @@ Suppose we have in the application there are operations that must be performed s
 
 ## How does it work / Как работает?
 
-Everything is very simple. You describe the operation that you want to limit, wait for permission to execute it, quit the queue for this operation.
+Everything is very simple. You describe the operation that you want to limit, wait for permission to execute it, do your thing, quit the queue for this operation.
 
-Все очень просто. Вы описываете операцию, которую хотите ограничить, ожидаете разрешения на её выполнение, выходите из очереди для этой операции.
+Все очень просто. Вы описываете операцию, которую хотите ограничить, ожидаете разрешения на её выполнение, делаете свое дело, выходите из очереди для этой операции.
 
 ```javascript
 const $AF = require('action-flow');
