@@ -13,25 +13,23 @@
 Все очень просто. Вы описываете операцию, которую хотите ограничить, ожидаете разрешения на её выполнение, делаете свое дело, выходите из очереди для этой операции.
 
 ```javascript
-const $AF = require('action-flow');
+const $AF = require('action-flow')({ // mongoDB connection
+  db, user, password, host, port
+});
 
-const AF = new $AF({
+const actionFlow = $AF.create({
   description: 'update rating',
   meta: {
     propertyDescrition: 'meow'
   }
-}, { // mongoDB connection
-  db, user, password, host, port
 });
 
-await AF.await();
+await actionFlow.await();
 
 // code you operation
 
-AF.end();
+await actionFlow.end();
 ```
-
-> Action Flow использует `MongoDB`. Пока-что необходимо указывать данные подключения к базе при каждом использовании, в будущих версиях это будет улучшено.
 
 [Подробный пример](https://github.com/deviun/action-flow/blob/master/test/action.flow.js)
 

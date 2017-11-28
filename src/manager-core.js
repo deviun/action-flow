@@ -89,12 +89,7 @@ class ManagerCore {
     if (!dbConnection) {
       const newConnection = new $JMongo({
         models: actionFlowModels,
-        db: _.get(dbConfig, 'db'),
-        user: _.get(dbConfig, 'user'),
-        password: _.get(dbConfig, 'password'),
-        host: _.get(dbConfig, 'host'),
-        host: _.get(dbConfig, 'host'),
-        port: _.get(dbConfig, 'port')
+        ...dbConfig
       }, (err, ok) => {
         if (err) {
           
@@ -166,4 +161,18 @@ class ManagerCore {
   }
 }
 
-module.exports = ManagerCore;
+class Creator {
+  constructor (dbConfig) {
+    this.dbConfig = dbConfig;
+  }
+
+  create (flowDescription, awaitTimeoutSec) {
+    return new ManagerCore(flowDescription, this.dbConfig, awaitTimeoutSec);
+  }
+
+  multi (descriptionList) {
+    return ManagerCore.multi(descriptionList, this.dbConfig);
+  }
+}
+
+module.exports = (dbConfig) => new Creator(dbConfig);

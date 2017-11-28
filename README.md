@@ -13,24 +13,23 @@ Suppose we have in the application there are operations that must be performed s
 Everything is very simple. You describe the operation that you want to limit, wait for permission to execute it, do your thing, quit the queue for this operation.
 
 ```javascript
-const $AF = require('action-flow');
+const $AF = require('action-flow')({ // mongoDB connection
+  db, user, password, host, port
+});
 
-const AF = new $AF({
+const actionFlow = $AF.create({
   description: 'update rating',
   meta: {
     propertyDescrition: 'meow'
   }
-}, { // mongoDB connection
-  db, user, password, host, port
 });
 
-await AF.await();
+await actionFlow.await();
 
 // code you operation
 
-AF.end();
+await actionFlow.end();
 ```
-> Action Flow uses `MongoDB`. So far it is necessary to specify the connection data to the database every time it is used, in future versions it will be improved.
 
 [Detailed example](https://github.com/deviun/action-flow/blob/master/test/action.flow.js)
 

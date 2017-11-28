@@ -1,5 +1,3 @@
-const $AF = require('../');
-
 const $Promise = require('bluebird');
 
 const dbConfig = {
@@ -8,6 +6,8 @@ const dbConfig = {
   port: 27017
 };
 
+const $AF = require('../')(dbConfig);
+
 const users = ['Anton Danilov', 'Anton Deviun', 'Deviun', 'БезЪумный'];
 
 (async () => {
@@ -15,7 +15,7 @@ const users = ['Anton Danilov', 'Anton Deviun', 'Deviun', 'БезЪумный'];
   
   const step1 = await $Promise.all(users.reduce((list, name) => {
     list.push(new $Promise(async (resolve, reject) => {
-      const AF = new $AF({
+      const actionFlow = $AF.create({
         test: 'action.flow',
         dir: 'test',
         description: {
@@ -24,37 +24,35 @@ const users = ['Anton Danilov', 'Anton Deviun', 'Deviun', 'БезЪумный'];
             manager: null
           }
         }
-      }, dbConfig);
+      });
   
-      await AF.await();
+      await actionFlow.await();
   
-      console.log('action execution  %s (in moment %s)', 
-                  name, 
-                  String(Math.floor((new Date()).getTime() / 1000)).substr(-2)
-                );
+      console.log(
+        'action execution  %s (in moment %s)', 
+        name, 
+        String(Math.floor((new Date()).getTime() / 1000)).substr(-2)
+      );
   
       setTimeout(() => {
-        AF.end();
+        actionFlow.end();
         resolve(name);
       }, 1000);
     }));
   
     return list;
   }, []));
-
-  // console.log({
-  //   step1
-  // });
 
   console.log('result without AF');
 
   const step2 = await $Promise.all(users.reduce((list, name) => {
     list.push(new $Promise(async (resolve, reject) => {
-      console.log('action execution %s (in moment %s)', 
-                   name, 
-                   String(Math.floor((new Date()).getTime() / 1000)).substr(-2)
-                 );
-  
+      console.log(
+        'action execution %s (in moment %s)', 
+        name, 
+        String(Math.floor((new Date()).getTime() / 1000)).substr(-2)
+      );
+
       setTimeout(() => {
         resolve(name);
       }, 1000);
@@ -62,10 +60,6 @@ const users = ['Anton Danilov', 'Anton Deviun', 'Deviun', 'БезЪумный'];
   
     return list;
   }, []));
-
-  // console.log({
-  //   step2
-  // });
 
   process.exit();
 
