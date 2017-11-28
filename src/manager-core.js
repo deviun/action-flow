@@ -55,13 +55,13 @@ class MultiFlow {
   }
 
   async await () {
-    return $Promise.all(this.flows.map((flow) => {
+    return await $Promise.all(this.flows.map((flow) => {
       return flow.await();
     }));
   }
 
   async end () {
-    return $Promise.all(this.flows.map((flow) => {
+    return await $Promise.all(this.flows.map((flow) => {
       return flow.end();
     }));
   }
