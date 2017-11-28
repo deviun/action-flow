@@ -24,8 +24,8 @@
   "homepage": "https://github.com/deviun/action-flow#readme",
   "dependencies": {
     "bluebird": "3.5.1",
-    "eslint": "^4.10.0",
-    "just-mongo": "1.1.0",
+    "eslint": "^4.12.0",
+    "just-mongo": "1.1.2",
     "lodash": "4.17.4",
     "sha256": "^0.2.0",
     "uuid": "3.1.0",
