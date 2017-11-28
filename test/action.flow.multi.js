@@ -31,6 +31,7 @@ const execution = [
       AF.end();
 
       console.log('finish execution for multi operations');
+      resolve();
     }, 1500);
   }),
   new $Promise( async (resolve, reject) => {
@@ -43,6 +44,7 @@ const execution = [
     setTimeout(() => {
       AF.end();
       console.log('finish execution for operation A');
+      resolve();
     }, 1500);
   }),
   new $Promise( async (resolve, reject) => {
@@ -56,11 +58,16 @@ const execution = [
       AF.end();
       
       console.log('finish execution for operation B');
+      resolve();
     }, 1500);
   })
 ];
 
 $Promise.all(execution)
+.then(() => {
+  process.exit();
+})
 .catch((err) => {
   console.log(err);
+  process.exit();
 });

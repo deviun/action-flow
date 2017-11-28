@@ -67,4 +67,6 @@ const users = ['Anton Danilov', 'Anton Deviun', 'Deviun', 'БезЪумный'];
   //   step2
   // });
 
+  process.exit();
+
 })();
