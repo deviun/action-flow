@@ -87,10 +87,9 @@ class ManagerCore {
     const dbConnection = mongoConnections[Symbol.for(configHash)];
 
     if (!dbConnection) {
-      const newConnection = new $JMongo({
-        models: actionFlowModels,
-        ...dbConfig
-      }, (err, ok) => {
+      const newConnection = new $JMongo(Object.assign({}, {
+        models: actionFlowModels
+      }, dbConfig), (err, ok) => {
         if (err) {
           
           delete this;
