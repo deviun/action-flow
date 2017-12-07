@@ -70,9 +70,7 @@ class MultiFlow {
 class ManagerCore {
   constructor (flowDescription, dbConfig, awaitTimeoutSec) {
     const checkDBConfig = [
-      _.has(dbConfig, 'db'),
-      _.has(dbConfig, 'host'),
-      _.has(dbConfig, 'port')
+      _.has(dbConfig, 'db')
     ];
 
     if (checkDBConfig.includes(false)) {
