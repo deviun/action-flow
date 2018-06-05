@@ -46,9 +46,9 @@ const Time = {
 };
 
 class MultiFlow {
-  constructor (descriptionList, dbConfig) {
+  constructor (descriptionList, dbConfig, awaitTimeoutSec) {
     this.flows = descriptionList.reduce((list, description) => {
-      list.push(new ManagerCore(description, dbConfig));
+      list.push(new ManagerCore(description, dbConfig, awaitTimeoutSec));
 
       return list;
     }, []);
@@ -167,8 +167,8 @@ class Creator {
     return new ManagerCore(flowDescription, this.dbConfig, awaitTimeoutSec);
   }
 
-  multi (descriptionList) {
-    return ManagerCore.multi(descriptionList, this.dbConfig);
+  multi (descriptionList, awaitTimeoutSec) {
+    return ManagerCore.multi(descriptionList, this.dbConfig, awaitTimeoutSec);
   }
 }
 
