@@ -37,17 +37,13 @@ class MultiFlow {
 class ManagerCore {
   constructor (flowDescription, data) {
     this.data = data;
-    
-    if (!has(data, 'db')) {
-      throw new Error(`[${moduleName}] db config is invalid`);
-    }
-
+  
     if (has(data, 'awaitTimeoutSec')) {
       this.AWAIT_TIMEOUT_SEC = get(data, 'awaitTimeoutSec');
     }
 
-   this.descriptionHash = $Description.parse(flowDescription);
-   this.createClientId();
+    this.descriptionHash = $Description.parse(flowDescription);
+    this.createClientId();
   }
 
   async await () {
