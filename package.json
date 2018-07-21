@@ -17,7 +17,7 @@
     "flow"
   ],
   "author": "Anton Danilov",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/deviun/action-flow/issues"
   },
@@ -28,9 +28,9 @@
   "dependencies": {
     "bluebird": "3.5.1",
     "eslint": "^4.12.0",
-    "just-mongo": "1.1.2",
-    "lodash": "4.17.4",
-    "sha256": "^0.2.0",
+    "just-mongo": "2.1.3",
+    "lodash": "^4.17.4",
+    "sha256": "0.2.0",
     "uuid": "3.1.0",
     "winston": "2.4.0"
   },
