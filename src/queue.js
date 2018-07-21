@@ -10,13 +10,18 @@ class Queue {
     this.driverName = get(options.driver, 'driverName', DEFAULT_DRIVER);
 
     if (has(options, 'driverClass')) {
-      Object.assign(this, options.driverClass);
+      this.driverClass = options.driverClass;
     } else {
       // try connect exists driver
-      const driverClass = require('./drivers/' + this.driverName);
-
-      Object.assign(this, driverClass);
+      this.driverClass = require('./drivers/' + this.driverName);
     }
+
+    this.driver = new this.driverClass(options);
+
+    // connect required methods from driver
+    this.join = this.driver.join.bind(this.driver);
+    this.isFirst = this.driver.isFirst.bind(this.driver);
+    this.leave = this.driver.leave.bind(this.driver);
   }
 }
 
