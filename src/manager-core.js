@@ -1,54 +1,21 @@
-const ROOT = `${__dirname}/../`;
-const moduleName = 'ActionFlow.manager-core';
+const has = require('lodash/has');
+const get = require('lodash/get');
 
-const _ = require('lodash');
-
-const $path = require('path');
 const $uuid = require('uuid/v4');
-const $sha256 = require('sha256');
-const $JMongo = require('just-mongo');
-const $log = require($path.resolve(ROOT, 'src/libs/log'));
-const $Queue = require($path.resolve(ROOT, 'src/queue'));
+const $Queue = require('./queue');
+const $Description = require('./description');
 const $Promise = require('bluebird');
 
 const AWAIT_TIMEOUT_SEC = 30;
 
-const mongoConnections = {};
-const actionFlowModels = require($path.resolve(ROOT, 'src/models')).models;
-
-const Description = {
-  parse (flowDescription) {
-    if (!(flowDescription instanceof Object)) {
-      throw new Error(`[${moduleName}] {flowDescription} -> object is not found`);
-    } 
-
-    function _p (obj) {
-      return Object.keys(obj).reduce((r, key, index) => {
-        const value = obj[key] instanceof Object ? _p(obj[key]) : String(obj[key]);
-
-        r += $sha256(`${key}.${value}.${index}`);
-
-        return r;
-      }, 'start');
-    }
-
-    return $sha256( _p(flowDescription) );
-  }
-};
-
-const Time = {
-  getSec () {
-    return (new Date()).getTime() / 1000;
-  },
-  getMsec () {
-    return (new Date()).getTime();
-  }
-};
+function getTimeSec () {
+  return (new Date()).getTime() / 1000;
+}
 
 class MultiFlow {
-  constructor (descriptionList, dbConfig, awaitTimeoutSec) {
+  constructor (descriptionList, data) {
     this.flows = descriptionList.reduce((list, description) => {
-      list.push(new ManagerCore(description, dbConfig, awaitTimeoutSec));
+      list.push(new ManagerCore(description, data));
 
       return list;
     }, []);
@@ -68,59 +35,36 @@ class MultiFlow {
 }
 
 class ManagerCore {
-  constructor (flowDescription, dbConfig, awaitTimeoutSec) {
-    const checkDBConfig = [
-      _.has(dbConfig, 'db')
-    ];
-
-    if (checkDBConfig.includes(false)) {
+  constructor (flowDescription, data) {
+    this.data = data;
+    
+    if (!has(data, 'db')) {
       throw new Error(`[${moduleName}] db config is invalid`);
     }
 
-    if (awaitTimeoutSec) {
-      this.AWAIT_TIMEOUT_SEC = awaitTimeoutSec;
+    if (has(data, 'awaitTimeoutSec')) {
+      this.AWAIT_TIMEOUT_SEC = get(data, 'awaitTimeoutSec');
     }
 
-    const configHash = Description.parse(dbConfig);
-    const dbConnection = mongoConnections[Symbol.for(configHash)];
-
-    if (!dbConnection) {
-      const newConnection = new $JMongo(Object.assign({}, {
-        models: actionFlowModels
-      }, dbConfig), (err, ok) => {
-        if (err) {
-          
-          delete this;
-        }
-      });
-
-      mongoConnections[Symbol.for(configHash)] = newConnection;
-
-      this.db = newConnection;
-    } else {
-      this.db = dbConnection;
-    }
-
-   this.descriptionHash = Description.parse(flowDescription);
+   this.descriptionHash = $Description.parse(flowDescription);
    this.createClientId();
   }
 
   async await () {
-    this.queue = new $Queue({
+    this.queue = new $Queue(Object.assign({}, {
       descriptionHash: this.descriptionHash,
-      clientId: this.clientId,
-      db: this.db
-    });
+      clientId: this.clientId
+    }, this.data));
 
     await this.queue.join();
 
     await new $Promise((resolve, reject) => {
-      const startTime = Time.getSec();
+      const startTime = getTimeSec();
       const timeout = this.AWAIT_TIMEOUT_SEC || AWAIT_TIMEOUT_SEC;
 
       const _await = async () => {
         const isFirstInQueue = await this.queue.isFirst();
-        const pointTime = Time.getSec();
+        const pointTime = getTimeSec();
         const timePassed = pointTime - startTime;
 
         if (!isFirstInQueue) {
@@ -153,23 +97,23 @@ class ManagerCore {
     return this.clientId;
   }
 
-  static multi (descriptionList, dbConfig) {
-    return new MultiFlow(descriptionList, dbConfig);
+  static multi (descriptionList, data) {
+    return new MultiFlow(descriptionList, data);
   }
 }
 
 class Creator {
-  constructor (dbConfig) {
-    this.dbConfig = dbConfig;
+  constructor (data) {
+    this.data = data;
   }
 
-  create (flowDescription, awaitTimeoutSec) {
-    return new ManagerCore(flowDescription, this.dbConfig, awaitTimeoutSec);
+  create (flowDescription) {
+    return new ManagerCore(flowDescription, this.data);
   }
 
-  multi (descriptionList, awaitTimeoutSec) {
-    return ManagerCore.multi(descriptionList, this.dbConfig, awaitTimeoutSec);
+  multi (descriptionList) {
+    return ManagerCore.multi(descriptionList, this.data);
   }
 }
 
-module.exports = (dbConfig) => new Creator(dbConfig);
+module.exports = (data) => new Creator(data);
