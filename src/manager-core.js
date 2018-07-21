@@ -71,7 +71,7 @@ class ManagerCore {
           if (timePassed < timeout) {
             setTimeout(_await, ( timePassed * 100 ));
           } else {
-            reject('timeout');
+            reject('(action flow) timeout: ' + this.descriptionHash);
           }
         } else {
           resolve();
