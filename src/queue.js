@@ -1,10 +1,4 @@
-const ROOT = `${__dirname}/../`;
-const moduleName = 'ActionFlow.queue';
-
-const _ = require('lodash');
-
-const $path = require('path');
-const {afModelsGetProp} = require($path.resolve(ROOT, 'src/models'));
+const {afModelsGetProp} = require('./models');
 
 const DB_QUEUE = afModelsGetProp('queue');
 
