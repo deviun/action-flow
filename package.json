@@ -43,6 +43,7 @@
     "files": [
       "test/*js",
       "!test/mongo-conf.js"
-    ]
+    ],
+    "cache": true
   }
 }
