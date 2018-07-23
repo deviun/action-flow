@@ -80,7 +80,7 @@ MongoDB storage.
 
 ```javascript
 const AF = require('action-flow')({
-  host: 'somehost'
+  host: 'localhost'
 });
 ```
 
@@ -108,4 +108,6 @@ const AF = require('action-flow')({
 |-----------------	|----------------------	|:--------:	|:-------:	|
 | awaitTimeoutSec 	| Maximum waiting time 	| false 	| 30 	|
 
-// TODO: Add links to docs about create custom drivers
+### Other docs:
+
+- [How create custom driver.](https://github.com/deviun/action-flow/tree/master/docs/create-custom-driver.md)
