@@ -113,7 +113,7 @@ test('(process) multi action flow', async (t) => {
   await actionFlow(af, t);
 });
 
-test.only('(custom) multi action flow', async (t) => {
+test('(custom) multi action flow', async (t) => {
   const af = () => AF_CUSTOM.multi(FLOWS);
 
   await actionFlow(af, t);
