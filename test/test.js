@@ -1,8 +1,16 @@
 const test = require('ava');
 const conf = require('./mongo-conf');
+
 const AF = require('../')(conf);
 const AF_PROCESS = require('../')({
   driverName: 'process'
+});
+
+const someCustomClass = require('../src/drivers/mongodb');
+
+const AF_CUSTOM = require('../')({
+  driverName: 'custom',
+  driverClass: someCustomClass
 });
 
 async function sleep (ms) {
@@ -105,4 +113,8 @@ test('(process) multi action flow', async (t) => {
   await actionFlow(af, t);
 });
 
-// TODO: Add test for custom class driver
+test.only('(custom) multi action flow', async (t) => {
+  const af = () => AF_CUSTOM.multi(FLOWS);
+
+  await actionFlow(af, t);
+});
