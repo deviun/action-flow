@@ -13,7 +13,9 @@ function getTimeSec () {
 }
 
 class MultiFlow {
-  constructor (descriptionList, data) {
+  constructor(descriptionList, data) {
+    this.multiBlock = new ManagerCore(descriptionList, data);
+
     this.flows = descriptionList.reduce((list, description) => {
       list.push(new ManagerCore(description, data));
 
@@ -22,15 +24,19 @@ class MultiFlow {
   }
 
   async await () {
-    return await $Promise.all(this.flows.map((flow) => {
+    await this.multiBlock.await();
+
+    await $Promise.all(this.flows.map((flow) => {
       return flow.await();
     }));
   }
 
   async end () {
-    return await $Promise.all(this.flows.map((flow) => {
+    await $Promise.all(this.flows.map((flow) => {
       return flow.end();
     }));
+
+    await this.multiBlock.end();
   }
 }
 
@@ -76,8 +82,8 @@ class ManagerCore {
 
       _await();
     })
-    .catch((err) => {
-      this.end();
+    .catch(async (err) => {
+      await this.end();
 
       throw err;
     });
