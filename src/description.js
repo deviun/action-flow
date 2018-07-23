@@ -7,7 +7,7 @@ const $sha256 = require('sha256');
 class Description {
   static parse(flowDescription) {
     if (!(flowDescription instanceof Object)) {
-      throw new Error(`[${moduleName}] {flowDescription} -> object is not found`);
+      throw new Error(`{flowDescription} -> object is not found`, flowDescription);
     }
 
     function _p(obj) {
