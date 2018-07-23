@@ -1,10 +1,10 @@
 {
   "name": "action-flow",
-  "version": "2.0.3",
-  "description": "Flow activity manager",
+  "version": "2.1.0",
+  "description": "Action flows manager.",
   "main": "index.js",
   "scripts": {
-    "test": "node test/action.flow.js"
+    "test": "ava --verbose"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
     "flow"
   ],
   "author": "Anton Danilov",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/deviun/action-flow/issues"
   },
@@ -27,15 +27,23 @@
   "homepage": "https://github.com/deviun/action-flow#readme",
   "dependencies": {
     "bluebird": "3.5.1",
-    "eslint": "^4.12.0",
-    "just-mongo": "1.1.2",
-    "lodash": "4.17.4",
-    "sha256": "^0.2.0",
+    "just-mongo": "2.1.3",
+    "lodash": "^4.17.4",
+    "sha256": "0.2.0",
     "uuid": "3.1.0",
     "winston": "2.4.0"
   },
   "devDependencies": {
     "babel-eslint": "8.0.2",
+    "ava": "0.25.0",
+    "eslint": "^4.12.0",
     "eslint-config-google": "0.9.1"
+  },
+  "ava": {
+    "files": [
+      "test/*js",
+      "!test/mongo-conf.js"
+    ],
+    "cache": true
   }
 }

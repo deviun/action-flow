@@ -1,36 +1,113 @@
 [![just-mongo](https://img.shields.io/npm/v/action-flow.svg?style=flat-square)](https://www.npmjs.com/package/action-flow/)
 
-# Action flow
+# Action flow 2.1
 
-Flow activity manager.
+Action flows manager.
 
 ## Why?
 
-Suppose we have in the application there are operations that must be performed simultaneously for only one initiator. This can be not only access to the database, but also a full-fledged big operation. Action flow can help solve this problem.
+Sometimes need to execute operations for only one client at a time. Examples: update operation of important data, check the authorization status.
 
-## How does it work
+## How it works?
 
-Everything is very simple. You describe the operation that you want to limit, wait for permission to execute it, do your thing, quit the queue for this operation.
+**1) Connect and configure the action-flow**
 
 ```javascript
-const $AF = require('action-flow')({ // mongoDB connection
-  db, user, password, host, port
-});
+const AF = require('action-flow')(options);
+```
 
-const actionFlow = $AF.create({
+**2) Describe the operation. Any objects are accept for describing.**
+
+```javascript
+const someActionFlow = AF.create({
   description: 'update rating',
   meta: {
     propertyDescrition: 'meow'
   }
 });
-
-await actionFlow.await();
-
-// code you operation
-
-await actionFlow.end();
 ```
 
-[Detailed example](https://github.com/deviun/action-flow/blob/master/test/action.flow.js)
+You can create a single thread for multiple threads.
 
-[Detailed example with multi](https://github.com/deviun/action-flow/blob/master/test/action.flow.multi.js)
+```javascript
+const someActionFlow = AF.multi([
+  {one: 1}, {two: 2}
+]);
+```
+
+This way, only one client can executing these two operations at a time.
+
+The thread of two operations will not start until these two threads of these operations are free. The expectation of a stream occurs sequentially to avoid deadlocks.
+
+**3) Set the waiting for the operation.**
+
+```javascript
+await someActionFlow.await();
+```
+
+**4) Executing your code.**
+
+```javascript
+// code your operation
+```
+
+**5) Set the ending for the operation.**
+
+```javascript
+await someActionFlow.end();
+```
+
+## Drivers & Custom drivers
+
+At now the action-flow have 2 drivers. To use specific driver, use **driverName** option.
+
+- mongodb (default)
+- process
+
+```javascript
+const AF = require('action-flow')({
+  driverName: 'process'
+});
+```
+
+### About each of drivers
+
+**mongodb**
+
+MongoDB storage. 
+
+**Options (optional)**: user, password, host, port.
+
+```javascript
+const AF = require('action-flow')({
+  host: 'localhost'
+});
+```
+
+------
+
+**proccess**
+
+Storage in Node.js process memory. No specific options.
+
+-----
+
+To connect custom driver, use **driverClass** option.
+
+```javascript
+const AF = require('action-flow')({
+  driverName: 'custom',
+  driverClass: someClass
+});
+```
+
+## More options
+
+
+| Name 	| Description 	| Required 	| Default 	|
+|-----------------	|----------------------	|:--------:	|:-------:	|
+| awaitTimeoutSec 	| Maximum waiting time 	| false 	| 30 	|
+
+### Other docs:
+
+- [How create custom driver.](https://github.com/deviun/action-flow/tree/master/docs/create-custom-driver.md)

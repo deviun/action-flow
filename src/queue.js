@@ -1,54 +1,32 @@
-const ROOT = `${__dirname}/../`;
-const moduleName = 'ActionFlow.queue';
+const get = require('lodash/get');
+const has = require('lodash/has');
+const $log = require('./libs/log');
 
-const _ = require('lodash');
-
-const $path = require('path');
-const {afModelsGetProp} = require($path.resolve(ROOT, 'src/models'));
-
-const DB_QUEUE = afModelsGetProp('queue');
-
-const Time = {
-  getSec () {
-    return (new Date()).getTime() / 1000;
-  },
-  getMsec () {
-    return (new Date()).getTime();
-  }
-};
+const DEFAULT_DRIVER = 'mongodb';
 
 class Queue {
   constructor (options) {
     Object.assign(this, options);
 
-    this.queue = this.db.collection(DB_QUEUE);
-  }
+    $log.debug('[action-flow] options: %s', JSON.stringify(options));
 
-  async join () {
-    await this.leave();
+    this.driverName = get(options, 'driverName', DEFAULT_DRIVER);
 
-    const me = {
-      clientId: this.clientId,
-      descriptionHash: this.descriptionHash,
-      setTime: Time.getMsec()
-    };
+    if (has(options, 'driverClass')) {
+      this.driverClass = options.driverClass;
+    } else {
+      // try connect exists driver
+      this.driverClass = require('./drivers/' + this.driverName);
+    }
 
-    return await this.queue.insert(me);
-  }
+    this.driver = new this.driverClass(options);
 
-  async isFirst () {
-    const firstClient = await this.queue.findOne({
-      descriptionHash: this.descriptionHash
-    });
+    $log.debug('[action-flow] use driver "%s"', options.driverName);
 
-    return ( firstClient.clientId === this.clientId );
-  }
-
-  async leave () {
-    return await this.queue.deleteMany({
-      clientId: this.clientId,
-      descriptionHash: this.descriptionHash
-    });
+    // connect required methods from driver
+    this.join = this.driver.join.bind(this.driver);
+    this.isFirst = this.driver.isFirst.bind(this.driver);
+    this.leave = this.driver.leave.bind(this.driver);
   }
 }
 
