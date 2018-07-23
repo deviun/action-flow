@@ -26,9 +26,9 @@ class MultiFlow {
   async await () {
     await this.multiBlock.await();
 
-    await $Promise.all(this.flows.map((flow) => {
-      return flow.await();
-    }));
+    for (const flow of this.flows) {
+      await flow.await();
+    }
   }
 
   async end () {
