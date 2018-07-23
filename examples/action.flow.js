@@ -1,10 +1,6 @@
 const $Promise = require('bluebird');
 
-const dbConfig = {
-  db: 'af_test',
-  host: '127.0.0.1',
-  port: 27017
-};
+const dbConfig = require('../test/mongo-conf');
 
 const $AF = require('../')(dbConfig);
 
