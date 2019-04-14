@@ -34,7 +34,7 @@ function createMongodb (data) {
  * @class mongodbDriver
  * @description storage driver for mongodb
  */
-class mongodbDriver extends driverCore {
+class MongodbDriver extends driverCore {
   /**
    * @constructor
    * @param {Object} data
@@ -44,7 +44,7 @@ class mongodbDriver extends driverCore {
    */
   constructor (data) {
     super({
-      driver: DRIVER_NAME
+      driver: DRIVER_NAME,
     });
 
     this.mongo = createMongodb(data);
@@ -52,7 +52,7 @@ class mongodbDriver extends driverCore {
     
     Object.assign(this, {
       clientId: data.clientId,
-      descriptionHash: data.descriptionHash
+      descriptionHash: data.descriptionHash,
     });
   }
 
@@ -62,7 +62,7 @@ class mongodbDriver extends driverCore {
     const me = {
       clientId: this.clientId,
       descriptionHash: this.descriptionHash,
-      setTime: (new Date()).getTime()
+      setTime: (new Date()).getTime(),
     };
 
     return await this.db.insert(me);
@@ -70,9 +70,9 @@ class mongodbDriver extends driverCore {
 
   async isFirst() {
     const firstClient = await this.db.findOne({
-      descriptionHash: this.descriptionHash
+      descriptionHash: this.descriptionHash,
     }, {
-      limit: 1
+      limit: 1,
     });
 
     return (firstClient.clientId === this.clientId);
@@ -81,9 +81,9 @@ class mongodbDriver extends driverCore {
   async leave() {
     return await this.db.deleteMany({
       clientId: this.clientId,
-      descriptionHash: this.descriptionHash
+      descriptionHash: this.descriptionHash,
     });
   }
 }
 
-module.exports = mongodbDriver;
+module.exports = MongodbDriver;

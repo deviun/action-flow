@@ -1,20 +1,20 @@
 const driverCore = require('../../driver-core');
-const get = require('lodash/get');
 
 const DRIVER_NAME = 'process';
 
 const processOperations = global.afDriverProcessStore = {};
 
-class processDriver extends driverCore {
-  constructor (data) {
+class ProcessDriver extends driverCore {
+  constructor ({
+    clientId,
+    descriptionHash,
+  } = {}) {
     super({
-      driver: DRIVER_NAME
+      driver: DRIVER_NAME,
     });
 
-    Object.assign(this, {
-      clientId: data.clientId,
-      descriptionHash: data.descriptionHash
-    });
+    this.clientId = clientId;
+    this.descriptionHash = descriptionHash;
 
     if (!processOperations[this.descriptionHash]) {
       processOperations[this.descriptionHash] = [];
@@ -31,8 +31,11 @@ class processDriver extends driverCore {
   }
 
   async leave () {
-    processOperations[this.descriptionHash] = processOperations[this.descriptionHash].filter((cid) => this.clientId !== cid);
+    processOperations[this.descriptionHash] = processOperations[this.descriptionHash]
+      .filter(
+        cid => this.clientId !== cid
+      );
   }
 }
 
-module.exports = processDriver;
+module.exports = ProcessDriver;

@@ -1,16 +1,26 @@
 const test = require('ava');
 const conf = require('./mongo-conf');
 
-const AF = require('../')(conf);
+const sessionName = new Date().getTime();
+
+const AF = require('../')({
+  ...conf,
+  sessionName,
+  noSHA: true,
+});
 const AF_PROCESS = require('../')({
-  driverName: 'process'
+  driverName: 'process',
+  awaitTimeoutSec: 900,
+  noSHA: true,
 });
 
 const someCustomClass = require('../src/drivers/mongodb');
 
 const AF_CUSTOM = require('../')({
   driverName: 'custom',
-  driverClass: someCustomClass
+  driverClass: someCustomClass,
+  sessionName,
+  noSHA: true,
 });
 
 async function sleep (ms) {

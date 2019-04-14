@@ -1,27 +1,58 @@
 const get = require('lodash/get');
 const has = require('lodash/has');
-const $log = require('./libs/log');
+const log = require('./libs/log');
+
+// drivers
+const processDriver = require('./drivers/process');
+const mongodbDriver = require('./drivers/mongodb');
+const redisDriver = require('./drivers/redis');
+
+const DRIVER_MAP = {
+  'process': processDriver,
+  'mongodb': mongodbDriver,
+  'redis': redisDriver,
+};
 
 const DEFAULT_DRIVER = 'mongodb';
 
 class Queue {
-  constructor (options) {
-    Object.assign(this, options);
+  constructor ({
+    driverName = DEFAULT_DRIVER,
+    driverClass,
+    clientId,
+    descriptionHash,
+    ...moreOptions
+  } = {
+    driverName: DEFAULT_DRIVER,
+  }) {
+    this.driverClass = driverClass;
 
-    $log.debug('[action-flow] options: %s', JSON.stringify(options));
+    log.debug('[action-flow] options: %s', JSON.stringify({
+      driverClass,
+      driverName,
+      moreOptions,
+    }));
 
-    this.driverName = get(options, 'driverName', DEFAULT_DRIVER);
+    this.driverName = driverName;
 
-    if (has(options, 'driverClass')) {
-      this.driverClass = options.driverClass;
+    if (driverClass) {
+      this.driverClass = driverClass;
     } else {
       // try connect exists driver
-      this.driverClass = require('./drivers/' + this.driverName);
+      this.driverClass = DRIVER_MAP[driverName];
     }
 
-    this.driver = new this.driverClass(options);
+    if (!this.driverClass) {
+      throw new Error('Driver class not found');
+    }
 
-    $log.debug('[action-flow] use driver "%s"', options.driverName);
+    this.driver = new this.driverClass({
+      clientId,
+      descriptionHash,
+      ...moreOptions
+    });
+
+    log.debug('[action-flow] use driver "%s"', driverName);
 
     // connect required methods from driver
     this.join = this.driver.join.bind(this.driver);
