@@ -3,14 +3,21 @@ const conf = require('./mongo-conf');
 
 const sessionName = new Date().getTime();
 
-const AF = require('../')({
+const AF_MONGO = require('../')({
   ...conf,
   sessionName,
+  driverName: 'mongodb',
   noSHA: true,
 });
 const AF_PROCESS = require('../')({
   driverName: 'process',
   awaitTimeoutSec: 900,
+  noSHA: true,
+});
+
+const AF_REDIS = require('../')({
+  driverName: 'redis',
+  sessionName: `afredis.${sessionName}`,
   noSHA: true,
 });
 
@@ -74,19 +81,19 @@ const FLOWS = [
 // tests
 
 test('(mongodb) one action flow', async (t) => {
-  const af = () => AF.create(FLOWS[0]);
+  const af = () => AF_MONGO.create(FLOWS[0]);
 
   await actionFlow(af, t);
 });
 
 test('(mongodb) multi action flow (all blocks)', async (t) => {
-  const af = () => AF.multi(FLOWS);
+  const af = () => AF_MONGO.multi(FLOWS);
 
   await actionFlow(af, t);
 });
 
 test('(mongodb) multi action flow (last 2 blocks)', async (t) => {
-  const af = () => AF.multi([
+  const af = () => AF_MONGO.multi([
     FLOWS[2], FLOWS[3]
   ]);
 
@@ -94,7 +101,7 @@ test('(mongodb) multi action flow (last 2 blocks)', async (t) => {
 });
 
 test('(mongodb) multi action flow (first 2 blocks)', async (t) => {
-  const af = () => AF.multi([
+  const af = () => AF_MONGO.multi([
     FLOWS[0], FLOWS[1]
   ]);
 
@@ -102,7 +109,7 @@ test('(mongodb) multi action flow (first 2 blocks)', async (t) => {
 });
 
 test('(mongodb) multi action flow (last 3 blocks)', async (t) => {
-  const af = () => AF.multi([
+  const af = () => AF_MONGO.multi([
    FLOWS[1],
    FLOWS[2],
    FLOWS[3]
@@ -125,6 +132,18 @@ test('(process) multi action flow', async (t) => {
 
 test('(custom) multi action flow', async (t) => {
   const af = () => AF_CUSTOM.multi(FLOWS);
+
+  await actionFlow(af, t);
+});
+
+test('(redis) one action flow', async (t) => {
+  const af = () => AF_REDIS.create(FLOWS[0]);
+
+  await actionFlow(af, t);
+});
+
+test('(redis) multi action flow', async (t) => {
+  const af = () => AF_REDIS.multi(FLOWS);
 
   await actionFlow(af, t);
 });
