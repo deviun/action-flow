@@ -125,10 +125,10 @@ class Creator {
    * @param {string} data.driverName driver name for using
    * @param {number} [data.awaitTimeoutSec] await timeout
    * @param {Driver} [data.driverClass] custom driver
-   * @param {host} [data.host] mongodb host
-   * @param {host} [data.port] mongodb port
+   * @param {host} [data.host] mongodb/redis host
+   * @param {host} [data.port] mongodb/redis port
    * @param {host} [data.user] mongodb user
-   * @param {host} [data.password] mongodb password
+   * @param {host} [data.password] mongodb/redis password
    * @param {string} [data.sessionName] prefix for all descriptions
    * @param {string} [data.noSHA=true] turn of sha256 for description
    */
