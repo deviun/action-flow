@@ -25,11 +25,10 @@ class Description {
         r += noSHA ? summary : sha256(summary);
 
         return r;
-      }, `${prefix ? prefix + '.' : ''}`);
+      }, '');
     }
 
-    const summary = _parse(description);
-
+    const summary = prefix + _parse(description);
     return noSHA ? summary : sha256();
   }
 }
