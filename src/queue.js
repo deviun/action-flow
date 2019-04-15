@@ -13,7 +13,7 @@ const DRIVER_MAP = {
   'redis': redisDriver,
 };
 
-const DEFAULT_DRIVER = 'mongodb';
+const DEFAULT_DRIVER = 'redis';
 
 class Queue {
   constructor ({
