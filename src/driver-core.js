@@ -16,7 +16,7 @@ class Driver {
   }
 
   /**
-   * @description Join the client to queue 
+   * @description Join the client to queue
    */
   async join () {
     // make in your driver
@@ -32,7 +32,7 @@ class Driver {
   }
 
   /**
-   * @description Remove the client from queue 
+   * @description Remove the client from queue
    */
   async leave () {
     // make in your driver
