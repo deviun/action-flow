@@ -1,5 +1,10 @@
 # Change log
 
+## v2.2
+- **2.2.0**
+  - Code refactoring
+  - Update docs
+  - Add redis driver, and set by default
 ## v2.1
 - **2.1.0**
   - Optimize code.
