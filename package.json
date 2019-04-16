@@ -1,7 +1,7 @@
 {
   "name": "action-flow",
-  "version": "2.1.0",
-  "description": "Action flows manager.",
+  "version": "2.2.0",
+  "description": "Smart mutex manager.",
   "main": "index.js",
   "scripts": {
     "test": "ava --verbose"
@@ -11,10 +11,10 @@
     "url": "git+https://github.com/deviun/action-flow.git"
   },
   "keywords": [
-    "mongodb",
     "transactions",
     "action",
-    "flow"
+    "flow",
+    "mutex"
   ],
   "author": "Anton Danilov",
   "license": "MIT",
