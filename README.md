@@ -1,16 +1,16 @@
 [![just-mongo](https://img.shields.io/npm/v/action-flow.svg?style=flat-square)](https://www.npmjs.com/package/action-flow/)
 
-# Action flow 2.1
+# Action flow 2.2
 
-Action flows manager.
+Smart mutex manager.
 
-## Why?
+## Example
 
-Sometimes need to execute operations for only one client at a time. Examples: update operation of important data, check the authorization status.
+You can pause the user's requests until the user's previous request is executed.
 
 ## How it works?
 
-**1) Connect and configure the action-flow**
+**1) Connect and configure the `action-flow`**
 
 ```javascript
 const AF = require('action-flow')(options);
@@ -19,19 +19,17 @@ const AF = require('action-flow')(options);
 **2) Describe the operation. Any objects are accept for describing.**
 
 ```javascript
-const someActionFlow = AF.create({
-  description: 'update rating',
-  meta: {
-    propertyDescrition: 'meow'
-  }
+const userRequestFlow = AF.create({
+  description: 'user-request',
+  userId,
 });
 ```
 
-You can create a single thread for multiple threads.
+Or you can create a common thread for any threads.
 
 ```javascript
-const someActionFlow = AF.multi([
-  {one: 1}, {two: 2}
+const anyFlow = AF.multi([
+  {one: 1}, {two: 2},
 ]);
 ```
 
@@ -42,35 +40,57 @@ The thread of two operations will not start until these two threads of these ope
 **3) Set the waiting for the operation.**
 
 ```javascript
-await someActionFlow.await();
+await userRequestFlow.await();
 ```
 
-**4) Executing your code.**
+**4) Do your code.**
 
 ```javascript
-// code your operation
+// execute user request code
 ```
 
 **5) Set the ending for the operation.**
 
 ```javascript
-await someActionFlow.end();
+await userRequestFlow.end();
 ```
 
 ## Drivers & Custom drivers
 
-At now the action-flow have 2 drivers. To use specific driver, use **driverName** option.
+At now the action-flow have 3 drivers. To use specific driver, use **driverName** option.
 
-- mongodb (default)
+- redis (default)
 - process
+- mongodb
+
+### About each of drivers
+
+**redis**
+
+Queue storage in Redis lists.
+
+**Options (optional)**: host, port, password.
 
 ```javascript
 const AF = require('action-flow')({
-  driverName: 'process'
+  host: 'localhost',
+  password: 'yourPwd',
 });
 ```
 
-### About each of drivers
+-----
+
+**proccess**
+
+Storage in Node.js process memory. No specific options.
+
+```javascript
+const AF = require('action-flow')({
+  driverName: 'process',
+});
+```
+
+-----
 
 **mongodb**
 
@@ -80,33 +100,28 @@ MongoDB storage.
 
 ```javascript
 const AF = require('action-flow')({
-  host: 'localhost'
+  host: 'localhost',
 });
 ```
 
 ------
 
-**proccess**
-
-Storage in Node.js process memory. No specific options.
-
------
-
-To connect custom driver, use **driverClass** option.
+Use **driverClass** option to connect custom driver.
 
 ```javascript
 const AF = require('action-flow')({
   driverName: 'custom',
-  driverClass: someClass
+  driverClass: someClass,
 });
 ```
 
 ## More options
 
-
 | Name 	| Description 	| Required 	| Default 	|
 |-----------------	|----------------------	|:--------:	|:-------:	|
-| awaitTimeoutSec 	| Maximum waiting time 	| false 	| 30 	|
+| awaitTimeoutSec 	| Maximum waiting time 	| false 	| 60 	|
+| sessionName 	| Prefix for all descriptions	| false 	| null 	|
+| noSHA | Turn off sha256 for description	| false 	| false |
 
 ### Other docs:
 
