@@ -5,7 +5,7 @@ const DRIVER_NAME = 'process';
 const processOperations = global.afDriverProcessStore = {};
 
 class ProcessDriver extends driverCore {
-  constructor ({
+  constructor({
     clientId,
     descriptionHash,
   } = {}) {
@@ -21,19 +21,19 @@ class ProcessDriver extends driverCore {
     }
   }
 
-  async join () {
+  async join() {
     this.leave();
     processOperations[this.descriptionHash].push(this.clientId);
   }
 
-  async isFirst () {
+  async isFirst() {
     return processOperations[this.descriptionHash][0] === this.clientId;
   }
 
-  async leave () {
+  async leave() {
     processOperations[this.descriptionHash] = processOperations[this.descriptionHash]
       .filter(
-        cid => this.clientId !== cid
+        cid => this.clientId !== cid,
       );
   }
 }

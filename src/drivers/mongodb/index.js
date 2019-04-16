@@ -42,7 +42,7 @@ class MongodbDriver extends driverCore {
    * @param {String} data.descriptionHash
    * @param {Any} data. Data for createMongodb function
    */
-  constructor (data) {
+  constructor(data) {
     super({
       driver: DRIVER_NAME,
     });
