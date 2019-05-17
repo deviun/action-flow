@@ -1,10 +1,8 @@
 const thenRedis = require('then-redis');
-const last = require('lodash/last');
 const DriverCode = require('../../driver-core');
 
 const DRIVER_NAME = 'redis';
 const COUNT_REMOVE_ITEMS = 1;
-const RANGE_BORDER = 50; // -50... len ...+50
 
 let redisClient;
 
@@ -47,20 +45,13 @@ class RedisDriver extends DriverCode {
   }
 
   async isFirst() {
-    const len = await this.redis.llen(this.descriptionHash);
-
-    if (len === 0) {
-      return false;
-    }
-
-    const range = await this.redis.lrange(this.descriptionHash, len - RANGE_BORDER, len + RANGE_BORDER);
+    const [first] = await this.redis.lrange(this.descriptionHash, -1, -1);
     
-    if (!range.length) {
+    if (!first) {
       return false;
     }
 
-    const firstAtList = last(range);
-    const isFirst = firstAtList === this.clientId;
+    const isFirst = first === this.clientId;
     return isFirst;
   }
 
