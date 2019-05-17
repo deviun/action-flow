@@ -12,7 +12,7 @@ class Description {
   static parse(description, {
     noSHA = false,
     prefix = '',
-  }) {
+  } = {}) {
     if (!(description instanceof Object)) {
       throw new Error(`{description} -> object is not found`, description);
     }
@@ -29,7 +29,7 @@ class Description {
     }
 
     const summary = prefix + _parse(description);
-    return noSHA ? summary : sha256();
+    return noSHA ? summary : sha256(summary);
   }
 }
 
