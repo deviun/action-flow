@@ -12,7 +12,6 @@ const AF_MONGO = require('../')({
 const AF_PROCESS = require('../')({
   driverName: 'process',
   awaitTimeoutSec: 900,
-  noSHA: true,
 });
 
 const AF_REDIS = require('../')({
