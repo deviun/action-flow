@@ -1,6 +1,6 @@
 const driverCore = require('../../driver-core');
 const { afModelsGetProp, models } = require('./models');
-const jMongo = require('just-mongo');
+const jMongo = require('just-mongo').default;
 const get = require('lodash/get');
 
 const DB_QUEUE = afModelsGetProp('queue'); // by default
