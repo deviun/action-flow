@@ -13,10 +13,13 @@ You can pause the user's requests until the user's previous request is executed.
 **1) Connect and configure the `action-flow`**
 
 ```javascript
+// commonJS
 const AF = require('action-flow')(options);
+// es modules
+import * as AF from 'action-flow';
 ```
 
-**2) Describe the operation. Any objects are accept for describing.**
+**2) Describe the operation. Any objects will accepted to describing.**
 
 ```javascript
 const userRequestFlow = AF.create({
@@ -37,7 +40,7 @@ This way, only one client can executing these two operations at a time.
 
 The thread of two operations will not start until these two threads of these operations are free. The expectation of a stream occurs sequentially to avoid deadlocks.
 
-**3) Set the waiting for the operation.**
+**3) Set the waiting the operation.**
 
 ```javascript
 await userRequestFlow.await();
@@ -49,7 +52,7 @@ await userRequestFlow.await();
 // execute user request code
 ```
 
-**5) Set the ending for the operation.**
+**5) Set the ending the operation.**
 
 ```javascript
 await userRequestFlow.end();
@@ -61,7 +64,7 @@ At now the action-flow have 3 drivers. To use specific driver, use **driverName*
 
 - redis (default)
 - process
-- mongodb
+- mongodb (just-mongo library is dev dependency, install that to use) 
 
 ### About each of drivers
 
@@ -80,7 +83,7 @@ const AF = require('action-flow')({
 
 -----
 
-**proccess**
+**process**
 
 Storage in Node.js process memory. No specific options.
 
