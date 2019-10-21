@@ -1,6 +1,3 @@
-const has = require('lodash/has');
-const get = require('lodash/get');
-
 const uuid = require('uuid/v4');
 const Queue = require('./queue');
 const Description = require('./description');
@@ -8,7 +5,7 @@ const promise = require('bluebird');
 
 const AWAIT_TIMEOUT_SEC = 60;
 
-function getTimeSec () {
+function getTimeSec() {
   return (new Date()).getTime() / 1000;
 }
 
@@ -23,7 +20,7 @@ class MultiFlow {
     }, []);
   }
 
-  async await () {
+  async await() {
     await this.multiBlock.await();
 
     for (const flow of this.flows) {
@@ -31,7 +28,7 @@ class MultiFlow {
     }
   }
 
-  async end () {
+  async end() {
     await promise.all(
       this.flows.map(
         flow => flow.end(),
@@ -64,7 +61,7 @@ class ManagerCore {
     this.clientId = uuid();
   }
 
-  async await () {
+  async await() {
     const {
       descriptionHash, clientId,
       data: {
@@ -110,7 +107,7 @@ class ManagerCore {
     });
   }
 
-  async end () {
+  async end() {
     return this.queue.leave();
   }
 
@@ -120,18 +117,6 @@ class ManagerCore {
 }
 
 class Creator {
-  /**
-   * @param {object} data Options
-   * @param {string} data.driverName driver name for using
-   * @param {number} [data.awaitTimeoutSec] await timeout
-   * @param {Driver} [data.driverClass] custom driver
-   * @param {host} [data.host] mongodb/redis host
-   * @param {host} [data.port] mongodb/redis port
-   * @param {host} [data.user] mongodb user
-   * @param {host} [data.password] mongodb/redis password
-   * @param {string} [data.sessionName] prefix for all descriptions
-   * @param {string} [data.noSHA=true] turn of sha256 for description
-   */
   constructor (data) {
     this.data = data;
   }
