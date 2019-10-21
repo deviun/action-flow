@@ -1,6 +1,10 @@
 # Change log
 
 ## v2.2
+- **2.2.2**
+  - add types
+  - remove just-mongo from main dependencies
+  - update just-mongo version and driver implementation
 - **2.2.1**
   - Make better redis driver
   - Fix bug with `noSHA` option

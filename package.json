@@ -1,8 +1,9 @@
 {
   "name": "action-flow",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Smart mutex manager.",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "ava --verbose"
   },
@@ -27,7 +28,6 @@
   "homepage": "https://github.com/deviun/action-flow#readme",
   "dependencies": {
     "bluebird": "3.5.1",
-    "just-mongo": "2.1.3",
     "lodash": "^4.17.4",
     "redis": "2.8.0",
     "redis-commands": "1.4.0",
@@ -37,6 +37,7 @@
     "winston": "2.4.0"
   },
   "devDependencies": {
+    "just-mongo": "2.2.6",
     "babel-eslint": "8.0.2",
     "ava": "0.25.0",
     "eslint": "^4.12.0",
