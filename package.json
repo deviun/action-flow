@@ -1,6 +1,6 @@
 {
   "name": "action-flow",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "Smart mutex manager.",
   "main": "index.js",
   "types": "index.d.ts",

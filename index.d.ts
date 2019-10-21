@@ -17,7 +17,7 @@ declare module "action-flow" {
   }
 
   export class ManagerCore {
-    constructor(): void;
+    constructor();
 
     await(): Promise<void>;
     end(): Promise<void>;
@@ -37,6 +37,6 @@ declare module "action-flow" {
   }
 
   export type CreatorFunctionT = (data: ActionFlowParametersT) => Creator;
-  
-  export = CreatorFunctionT;
+
+  export default CreatorFunctionT;
 }

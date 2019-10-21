@@ -1,6 +1,6 @@
 [![just-mongo](https://img.shields.io/npm/v/action-flow.svg?style=flat-square)](https://www.npmjs.com/package/action-flow/)
 
-# Action flow 2.2
+# Action flow 2.3
 
 Smart mutex manager.
 
@@ -14,9 +14,9 @@ You can pause the user's requests until the user's previous request is executed.
 
 ```javascript
 // commonJS
-const AF = require('action-flow')(options);
+const AF = require('action-flow').default(options);
 // es modules
-import * as AFCreator from 'action-flow';
+import AFCreator from 'action-flow';
 const AF = AFCreator(options);
 ```
 

@@ -3,18 +3,18 @@ const conf = require('./mongo-conf');
 
 const sessionName = new Date().getTime();
 
-const AF_MONGO = require('../')({
+const AF_MONGO = require('../').default({
   ...conf,
   sessionName,
   driverName: 'mongodb',
   noSHA: true,
 });
-const AF_PROCESS = require('../')({
+const AF_PROCESS = require('../').default({
   driverName: 'process',
   awaitTimeoutSec: 900,
 });
 
-const AF_REDIS = require('../')({
+const AF_REDIS = require('../').default({
   driverName: 'redis',
   sessionName: `afredis.${sessionName}`,
   noSHA: true,
@@ -22,7 +22,7 @@ const AF_REDIS = require('../')({
 
 const someCustomClass = require('../src/drivers/mongodb');
 
-const AF_CUSTOM = require('../')({
+const AF_CUSTOM = require('../').default({
   driverName: 'custom',
   driverClass: someCustomClass,
   sessionName,
