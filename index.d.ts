@@ -36,7 +36,7 @@ declare module "action-flow" {
     multi(descriptionList: ActionFlowDescriptionT[]): MultiFlow;
   }
 
-  export type CreatorFunctionT = (data: ActionFlowParametersT) => Creator;
+  export function CreatorFunctionT(data: ActionFlowParametersT): Creator;
 
   export default CreatorFunctionT;
 }
