@@ -16,7 +16,8 @@ You can pause the user's requests until the user's previous request is executed.
 // commonJS
 const AF = require('action-flow')(options);
 // es modules
-import * as AF from 'action-flow';
+import * as AFCreator from 'action-flow';
+const AF = AFCreator(options);
 ```
 
 **2) Describe the operation. Any objects will accepted to describing.**
