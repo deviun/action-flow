@@ -1,1 +1,1 @@
-module.exports = require('./src/manager-core');
+exports.default = require('./src/manager-core');
